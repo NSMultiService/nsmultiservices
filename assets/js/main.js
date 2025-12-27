@@ -73,7 +73,7 @@ document.addEventListener('DOMContentLoaded', function(){
   if(form && sendBtn){
     sendBtn.addEventListener('click', async function(){
         
-      const status = document.getElementById('formStatus');
+      const status = document.getElementById('formStatus'); 
       const name = (form.name.value || '').trim();
       const phone = (form.phone.value || '').trim();
       const service = (form.service.value || '').trim();

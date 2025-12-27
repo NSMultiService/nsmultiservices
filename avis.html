@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Contact — NSM</title>
+  <title>Avis — NSM</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="assets/images/Fav.jpg" type="image/x-icon">
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -21,48 +21,51 @@
     <button class="nav-toggle" aria-label="Ouvrir le menu">☰</button>
   </header>
 
-  <main class="container contact-page">
-    <h1>Contactez-nous</h1>
-    <div class="contact-grid">
-      <div class="contact-info">
-        <h3>Coordonnées</h3>
-        <p><strong>Téléphone :</strong></p>
-        <p><a href="tel:+50940317399">+509 40 31 7399</a></p>
-        <p><a href="tel:+50947812457">+509 47 81 2457</a></p>
-        <p><a href="tel:+50941819394">+509 41 81 9394</a></p>
-        <p><strong>Adresse :</strong> Baie-Tortue, Anse-à-Galets (La Gonâve)</p>
-        <p><a class="btn outline" href="https://wa.me/50940317399" target="_blank" rel="noopener">WhatsApp</a></p>
-      </div>
+  <main class="container">
+    <h1>Avis de nos clients</h1>
 
-      <form id="contactForm" class="contact-form" action="javascript:void(0);">
+    <section class="review-form card">
+      <h2>Laisser un avis</h2>
+      <form id="reviewForm" action="javascript:void(0);">
         <label>Nom
           <input type="text" name="name" required>
         </label>
-        <label>Téléphone
-          <input type="tel" name="phone" required>
-        </label>
-        <label>Service demandé
-          <select name="service" required>
-            <option value="">-- Choisir --</option>
+        <label>Service (optionnel)
+          <select name="service">
+            <option value="">-- Aucun --</option>
             <option>Services administratifs</option>
             <option>Impression & bureautique</option>
             <option>Informatique & sécurité</option>
           </select>
         </label>
-        <label>Message
-          <textarea name="message" rows="5" required></textarea>
+        <label>Note
+          <select name="rating" required>
+            <option value="">-- Choisir --</option>
+            <option value="5">5 — Excellent</option>
+            <option value="4">4 — Très bien</option>
+            <option value="3">3 — Bien</option>
+            <option value="2">2 — Moyen</option>
+            <option value="1">1 — Insatisfait</option>
+          </select>
+        </label>
+        <label>Avis
+          <textarea name="message" rows="4" required></textarea>
         </label>
         <div class="form-actions">
-          <!-- bouton type="button" : empêche toute soumission HTML par défaut (évite la 404 si JS absent) -->
-          <button id="sendBtn" type="button" class="btn primary">Envoyer</button>
-          <a href="https://wa.me/50940317399" class="btn outline" target="_blank" rel="noopener">WhatsApp</a>
+          <button type="submit" class="btn primary">Publier</button>
+          <a href="https://wa.me/50940317399" class="btn outline" target="_blank" rel="noopener">Envoyer via WhatsApp</a>
         </div>
-        <p id="formStatus" class="muted"></p>
+        <p id="reviewStatus" class="muted"></p>
       </form>
-    </div>
+    </section>
+
+    <section class="reviews-list">
+      <h2>Avis récents</h2>
+      <div id="reviewsList" class="grid"></div>
+    </section>
   </main>
 
-   <footer class="site-footer">
+  <footer class="site-footer">
     <div class="container footer-inner">
         
       <div>
@@ -76,8 +79,7 @@
       </div>
     </div>
   </footer>
-
   <a class="whatsapp-float" href="https://wa.me/50940317399" target="_blank" rel="noopener">WA</a>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/reviews.js"></script>
 </body>
 </html>
