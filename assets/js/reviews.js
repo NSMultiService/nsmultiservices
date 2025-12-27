@@ -9,25 +9,59 @@ document.addEventListener('DOMContentLoaded', function(){
   const list = document.getElementById('reviewsList');
   const status = document.getElementById('reviewStatus');
 
+  // Charger les avis depuis localStorage (persiste même après fermeture du navigateur)
   function loadReviews(){ 
-    try{ return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }catch{ return []; }
+    try{ 
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : [];
+    }catch(e){ 
+      console.error('Erreur lecture localStorage:', e);
+      return []; 
+    }
   }
-  function saveReviews(arr){ localStorage.setItem(STORAGE_KEY, JSON.stringify(arr)); }
 
+  // Sauvegarder les avis dans localStorage
+  function saveReviews(arr){ 
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
+    }catch(e){
+      console.error('Erreur écriture localStorage:', e);
+    }
+  }
+
+  // Afficher tous les avis (les plus récents d'abord)
   function render(){
     const reviews = loadReviews().sort((a,b)=> b.date - a.date);
-    list.innerHTML = reviews.length ? reviews.map(r => `
-      <article class="review-card card">
-        <div class="review-head"><strong>${escapeHtml(r.name)}</strong><span class="muted"> — ${r.service || 'Général'}</span></div>
-        <div class="review-body"><div class="rating">` + '★'.repeat(r.rating) + '☆'.repeat(5-r.rating) + `</div><p>${escapeHtml(r.message)}</p></div>
-        <div class="review-meta muted">${new Date(r.date).toLocaleString('fr-FR')}</div>
-      </article>`).join('') : '<p class="muted">Aucun avis pour le moment.</p>';
+    if(list){
+      list.innerHTML = reviews.length ? reviews.map(r => `
+        <article class="review-card card">
+          <div class="review-head">
+            <strong>${escapeHtml(r.name)}</strong>
+            <span class="muted"> — ${r.service || 'Service général'}</span>
+          </div>
+          <div class="review-body">
+            <div class="rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
+            <p>${escapeHtml(r.message)}</p>
+          </div>
+          <div class="review-meta muted">${new Date(r.date).toLocaleDateString('fr-FR', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
+        </article>
+      `).join('') : '<p class="muted">Aucun avis pour le moment. Soyez le premier à laisser un avis !</p>';
+    }
   }
 
-  function escapeHtml(s){ return String(s||'').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'})[c]); }
+  // Échapper les caractères HTML pour éviter les injections
+  function escapeHtml(s){ 
+    return String(s||'').replace(/[&<>"']/g, c => ({
+      '&':'&amp;',
+      '<':'&lt;',
+      '>':'&gt;',
+      '"':'&quot;',
+      "'":"&#39;"
+    })[c]); 
+  }
 
+  // Envoyer une notification email au propriétaire
   async function sendNotification(params){
-    // envoi via API REST EmailJS (ne dépend pas du CDN)
     const url = 'https://api.emailjs.com/api/v1.0/email/send';
     const body = {
       service_id: EMAILJS_SERVICE_ID,
@@ -35,40 +69,72 @@ document.addEventListener('DOMContentLoaded', function(){
       user_id: EMAILJS_PUBLIC_KEY,
       template_params: {
         reviewer_name: params.name,
-        reviewer_phone: params.phone || '',
-        reviewer_service: params.service || '',
-        reviewer_rating: params.rating,
+        reviewer_service: params.service || 'Service général',
+        reviewer_rating: '★'.repeat(params.rating),
         reviewer_message: params.message,
         to_email: OWNER_EMAIL
       }
     };
-    const res = await fetch(url, { method: 'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+    const res = await fetch(url, { 
+      method: 'POST', 
+      headers:{'Content-Type':'application/json'}, 
+      body: JSON.stringify(body) 
+    });
     if(!res.ok) throw new Error('EmailJS API error ' + res.status);
     return res;
   }
 
-  form && form.addEventListener('submit', async function(e){
-    e.preventDefault();
-    const name = form.name.value.trim();
-    const service = form.service.value.trim();
-    const rating = parseInt(form.rating.value || '0', 10);
-    const message = form.message.value.trim();
-    if(!name || !rating || !message){ status.textContent = 'Veuillez remplir tous les champs requis.'; status.style.color = '#ef4444'; return; }
-    const review = { name, service, rating, message, date: Date.now() };
-    const reviews = loadReviews(); reviews.push(review); saveReviews(reviews); render();
-    status.textContent = 'Publication en cours...'; status.style.color = 'var(--muted)';
+  // Gérer la soumission du formulaire d'avis
+  if(form){
+    form.addEventListener('submit', async function(e){
+      e.preventDefault();
+      const name = form.name.value.trim();
+      const service = form.service.value.trim();
+      const rating = parseInt(form.rating.value || '0', 10);
+      const message = form.message.value.trim();
 
-    try{
-      await sendNotification({ name, phone:'', service, rating, message });
-      status.textContent = 'Merci — votre avis est publié et nous en avons été informés.';
-      status.style.color = '#10b981';
-    }catch(err){
-      console.warn('Notification failed:', err);
-      status.textContent = 'Avis publié localement, mais l\'alerte email a échoué. Vous pouvez envoyer via WhatsApp.';
-      status.style.color = '#ef4444';
-    }
-    form.reset();
-  });
+      // Validation
+      if(!name || !rating || !message){ 
+        status.textContent = 'Veuillez remplir tous les champs requis.'; 
+        status.style.color = '#ef4444'; 
+        return; 
+      }
 
+      // Créer l'objet avis
+      const review = { 
+        name, 
+        service, 
+        rating, 
+        message, 
+        date: Date.now() 
+      };
+
+      // Ajouter l'avis à la liste et sauvegarder
+      const reviews = loadReviews();
+      reviews.push(review);
+      saveReviews(reviews);
+      
+      // Afficher immédiatement le nouvel avis
+      render();
+      
+      status.textContent = 'Publication en cours...'; 
+      status.style.color = 'var(--muted)';
+
+      // Envoyer une notification au propriétaire
+      try{
+        await sendNotification({ name, service, rating, message });
+        status.textContent = '✓ Merci ! Votre avis est publié. Nous en avons été informés.';
+        status.style.color = '#10b981';
+      }catch(err){
+        console.warn('Notification email échouée:', err);
+        status.textContent = '✓ Avis publié avec succès. (Alerte email échouée, mais votre avis est visible)';
+        status.style.color = '#10b981';
+      }
+      
+      form.reset();
+    });
+  }
+
+  // Afficher les avis au chargement de la page
   render();
 });
