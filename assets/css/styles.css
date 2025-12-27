@@ -382,7 +382,7 @@ h2 {
 /* Responsive */
 .nav-toggle {
     display: none;
-    background: transparent;
+    background-color: #fc9433;
     border: 0;
     font-size: 1.25rem;
     cursor: pointer
