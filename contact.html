@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Contact — NSM</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header container header-inner">
+    <a class="brand" href="index.html">NSM</a>
+    <nav class="nav">
+      <a href="index.html">Accueil</a>
+      <a href="services.html">Nos services</a>
+      <a href="about.html">À propos</a>
+      <a href="contact.html" class="btn small">Contact</a>
+    </nav>
+    <button class="nav-toggle" aria-label="Ouvrir le menu">☰</button>
+  </header>
+
+  <main class="container contact-page">
+    <h1>Contactez-nous</h1>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Coordonnées</h3>
+        <p><strong>Téléphone :</strong></p>
+        <p><a href="tel:+50940317399">+509 40 31 7399</a></p>
+        <p><a href="tel:+50947812457">+509 47 81 2457</a></p>
+        <p><a href="tel:+50941819394">+509 41 81 9394</a></p>
+        <p><strong>Adresse :</strong> Baie-Tortue, Anse-à-Galets (La Gonâve)</p>
+        <p><a class="btn outline" href="https://wa.me/50940317399" target="_blank" rel="noopener">WhatsApp</a></p>
+      </div>
+
+      <form id="contactForm" class="contact-form" action="javascript:void(0);">
+        <label>Nom
+          <input type="text" name="name" required>
+        </label>
+        <label>Téléphone
+          <input type="tel" name="phone" required>
+        </label>
+        <label>Service demandé
+          <select name="service" required>
+            <option value="">-- Choisir --</option>
+            <option>Services administratifs</option>
+            <option>Impression & bureautique</option>
+            <option>Informatique & sécurité</option>
+          </select>
+        </label>
+        <label>Message
+          <textarea name="message" rows="5" required></textarea>
+        </label>
+        <div class="form-actions">
+          <!-- bouton type="button" : empêche toute soumission HTML par défaut (évite la 404 si JS absent) -->
+          <button id="sendBtn" type="button" class="btn primary">Envoyer</button>
+          <a href="https://wa.me/50940317399" class="btn outline" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+        <p id="formStatus" class="muted"></p>
+      </form>
+    </div>
+  </main>
+
+  <!-- <footer class="site-footer">
+    <div class="container footer-inner">
+        
+      <div>
+        <strong>Naderplus Solution Multi-Services</strong>
+        <p>Baie-Tortue, Anse-à-Galets (La Gonâve)</p>
+      </div>
+      <div class="contacts">
+        <a href="tel:+50940317399">+509 40 31 7399</a>
+        <a href="tel:+50947812457">+509 47 81 2457</a>
+        <a href="tel:+50941819394">+509 41 81 9394</a>
+      </div>
+    </div>
+  </footer> -->
+
+  <a class="whatsapp-float" href="https://wa.me/50940317399" target="_blank" rel="noopener">WA</a>
+  <script src="assets/js/main.js"></script>
+</body>
+</html>
