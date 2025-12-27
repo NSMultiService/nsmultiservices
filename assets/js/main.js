@@ -7,10 +7,9 @@ document.addEventListener('DOMContentLoaded', function(){
   }
 
   // EmailJS configuration — remplacer par vos valeurs
-  const EMAILJS_PUBLIC_KEY = 'lTH_M6g1OYhWn8dCx';
-  const EMAILJS_SERVICE_ID = 'nsm_rfuqyff';   // ← remplacer par votre Service ID
-  const EMAILJS_TEMPLATE_ID = 'template_5e538zh'; // ← remplacer par votre Template ID
-
+  const EMAILJS_PUBLIC_KEY = 'AdzX2pPF5aUa4A9hQ';
+  const EMAILJS_SERVICE_ID = 'nsm_rfuqyff';  
+  const EMAILJS_TEMPLATE_ID = 'template_5e538zh'; 
   // Liste des URLs CDN à tenter
   const EMAILJS_CDNS = [
     'https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/build/index.min.js',
@@ -47,6 +46,22 @@ document.addEventListener('DOMContentLoaded', function(){
     throw new Error('Tous les CDN EmailJS ont échoué.');
   }
 
+  // --- ADDED: REST API fallback pour envoyer directement via EmailJS si CDN bloqué
+  async function sendViaEmailJsApi(service_id, template_id, user_id, template_params){
+    const url = 'https://api.emailjs.com/api/v1.0/email/send';
+    const body = { service_id, template_id, user_id, template_params };
+    const res = await fetch(url, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const txt = await res.text().catch(()=>res.statusText);
+      throw new Error(`API error ${res.status}: ${txt}`);
+    }
+    return res;
+  }
+
   const form = document.getElementById('contactForm');
   const sendBtn = document.getElementById('sendBtn');
 
@@ -57,6 +72,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
   if(form && sendBtn){
     sendBtn.addEventListener('click', async function(){
+        
       const status = document.getElementById('formStatus');
       const name = (form.name.value || '').trim();
       const phone = (form.phone.value || '').trim();
@@ -74,41 +90,55 @@ document.addEventListener('DOMContentLoaded', function(){
       try{
         await loadEmailJsWithFallback(2, 800);
       }catch(err){
-        console.error('EmailJS load error:', err);
-        status.textContent = 'Service email non disponible. Envoi via WhatsApp ?';
-        status.style.color = '#ef4444';
-        const confirmWhats = confirm('Le service email est indisponible. Voulez-vous envoyer ce message via WhatsApp ?');
-        if(confirmWhats) sendViaWhatsApp(name, phone, service, message);
-        return;
+        console.warn('EmailJS CDN load failed — will attempt REST API fallback:', err);
+        // ne pas retourner ici — on continue et essayera l'API REST ci‑dessous
       }
 
-      if(!window.emailjs || !emailjs.send){
-        console.error('EmailJS présent mais send absent');
-        status.textContent = 'Service email non disponible. Utilisez WhatsApp.';
-        status.style.color = '#ef4444';
-        return;
-      }
-
+      // préparation des params (mettre votre email correct)
       const templateParams = {
         client_name: name,
         client_phone: phone,
         service: service,
         message: message,
-        to_email: 'nsmultiservice@gmail.com'
+        to_email: 'nsmultiservice3@gmail.com'
       };
 
-      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
-        .then(function(){
-          status.textContent = '✓ Merci ! Votre message a été reçu. Nous vous contacterons sous peu.';
+      // Si la librairie est chargée, utiliser emailjs.send
+      if(window.emailjs && emailjs.send){
+        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, templateParams)
+          .then(function(){
+            status.textContent = '✓ Merci ! Votre message a été reçu. Nous vous contacterons sous peu.';
+            status.style.color = '#10b981';
+            form.reset();
+          }).catch(async function(error){
+            console.warn('emailjs.send failed, trying REST API:', error);
+            // essai via REST API
+            try{
+              await sendViaEmailJsApi(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY, templateParams);
+              status.textContent = '✓ Merci ! Votre message a été reçu (via API).';
+              status.style.color = '#10b981';
+              form.reset();
+            }catch(apiErr){
+              console.error('EmailJS API send failed:', apiErr);
+              status.textContent = '✗ Envoi échoué. Voulez-vous envoyer via WhatsApp ?';
+              status.style.color = '#ef4444';
+              if(confirm('L\'envoi par email a échoué. Envoyer via WhatsApp maintenant ?')) sendViaWhatsApp(name, phone, service, message);
+            }
+          });
+      }else{
+        // librairie non disponible → tenter directement l'API REST
+        try{
+          await sendViaEmailJsApi(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, EMAILJS_PUBLIC_KEY, templateParams);
+          status.textContent = '✓ Merci ! Votre message a été reçu (via API).';
           status.style.color = '#10b981';
           form.reset();
-        }).catch(function(error){
-          console.error('Erreur EmailJS send:', error);
-          status.textContent = '✗ Erreur d\'envoi. Voulez-vous envoyer via WhatsApp ?';
+        }catch(apiErr){
+          console.error('EmailJS API send failed:', apiErr);
+          status.textContent = '✗ Envoi échoué. Voulez-vous envoyer via WhatsApp ?';
           status.style.color = '#ef4444';
-          const ok = confirm('L\'envoi par email a échoué. Envoyer via WhatsApp maintenant ?');
-          if(ok) sendViaWhatsApp(name, phone, service, message);
-        });
+          if(confirm('L\'envoi par email a échoué. Envoyer via WhatsApp maintenant ?')) sendViaWhatsApp(name, phone, service, message);
+        }
+      }
     });
   }
 });
