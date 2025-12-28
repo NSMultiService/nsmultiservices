@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>À propos — NSM</title>
+  <title>Galerie — NSM</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="shortcut icon" href="assets/images/Fav.jpg" type="image/x-icon">
   <link rel="stylesheet" href="assets/css/styles.css">
@@ -15,7 +15,7 @@
       <a href="index.html">Accueil</a>
       <a href="services.html">Nos services</a>
       <a href="about.html">À propos</a>
-      <a href="avis.html" aria-current="page">Avis</a>
+      <a href="avis.html">Avis</a>
       <a href="galerie.html" aria-current="page">Galerie</a>
       <a href="contact.html" class="btn small">Contact</a>
     </nav>
@@ -23,41 +23,34 @@
   </header>
 
   <main class="container">
-    <h1>À propos de Naderplus Solution Multi-Services</h1>
-    <p>Naderplus Solution Multi-Services (NSM) offre des solutions complètes en services administratifs, impression, informatique et sécurité. Notre objectif est de faciliter vos démarches administratives et technologiques avec professionnalisme et discrétion.</p>
+    <h1>Galerie de nos travaux</h1>
+    <p class="lead">Découvrez nos réalisations en services administratifs, impression et informatique.</p>
+    <br> <p class="nb">NB: Pour afficher l'image complète, faites un clic droit dessus et sélectionnez « Ouvrir l'image dans un nouvel onglet ».</p>
 
-    <section>
-      <h2>Mission</h2>
-      <p>Faciliter les démarches administratives et technologiques pour les particuliers et les entreprises.</p>
-    </section>
+    <!-- Filtres -->
+    <div class="gallery-filters">
+      <button class="filter-btn active" data-filter="all">Tous</button>
+      <button class="filter-btn" data-filter="administratif">Administratif</button>
+      <button class="filter-btn" data-filter="impression">Impression</button>
+      <button class="filter-btn" data-filter="informatique">Informatique</button>
+    </div>
 
-    <section>
-      <h2>Vision</h2>
-      <p>Devenir une référence multi-services fiable en Haïti, reconnue pour la qualité et la sécurité des prestations.</p>
-    </section>
-
-    <section>
-      <h2>Valeurs</h2>
-      <ul class="list">
-        <li>Professionnalisme</li>
-        <li>Rapidité</li>
-        <li>Confidentialité</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Logo Officiel</h2>
-      <div class="team">
-        <img src="assets/images/logoNSM.png" alt="logo NSM" />
-        <div>
-          <h3>Responsable</h3>
-          <p>Professionnel expérimenté, dédié au suivi personnalisé des demandes clients.</p>
-        </div>
-      </div>
-    </section>
+    <!-- Galerie -->
+    <div class="gallery-grid" id="galleryGrid">
+      <!-- Les images seront chargées par JavaScript -->
+    </div>
   </main>
 
- <footer class="site-footer">
+  <!-- Modal pour afficher l'image en grand -->
+  <div id="imageModal" class="modal">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImg" src="" alt="">
+    <div id="modalCaption" class="modal-caption"></div>
+    <a class="modal-prev" onclick="changeImage(-1)">❮</a>
+    <a class="modal-next" onclick="changeImage(1)">❯</a>
+  </div>
+
+  <footer class="site-footer">
     <div class="container footer-inner">
         
       <div>
@@ -70,9 +63,9 @@
         <a href="tel:+50941819394">+509 41 81 9394</a>
       </div>
     </div>
-  </footer> 
+  </footer>
 
   <a class="whatsapp-float" href="https://wa.me/50940317399" target="_blank" rel="noopener">WA</a>
-  <script src="assets/js/main.js"></script>
+  <script src="assets/js/galerie.js"></script>
 </body>
 </html>
