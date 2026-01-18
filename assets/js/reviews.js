@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
   const STORAGE_KEY = 'nsm_reviews_v1';
+  const REVIEWS_API = '/api/reviews.php';
   const EMAILJS_PUBLIC_KEY = 'AdzX2pPF5aUa4A9hQ';
   const EMAILJS_SERVICE_ID = 'nsm_rfuqyff';
   const EMAILJS_TEMPLATE_ID = 'template_5e538zh';
@@ -9,34 +10,44 @@ document.addEventListener('DOMContentLoaded', function(){
   const list = document.getElementById('reviewsList');
   const status = document.getElementById('reviewStatus');
 
-  // Charger les avis depuis localStorage (persiste même après fermeture du navigateur)
-  function loadReviews(){ 
-    try{ 
-      const stored = localStorage.getItem(STORAGE_KEY);
-      return stored ? JSON.parse(stored) : [];
-    }catch(e){ 
-      console.error('Erreur lecture localStorage:', e);
-      return []; 
+  // Charger les avis depuis l'API serveur (fallback localStorage si offline)
+  async function fetchReviews(){
+    try{
+      const res = await fetch(REVIEWS_API);
+      if(!res.ok) throw new Error('Fetch failed ' + res.status);
+      const json = await res.json();
+      return Array.isArray(json) ? json : [];
+    }catch(err){
+      console.warn('Récupération via API échouée, fallback localStorage:', err);
+      try{ const stored = localStorage.getItem(STORAGE_KEY); return stored ? JSON.parse(stored) : []; }catch(e){ return []; }
     }
   }
 
-  // Sauvegarder les avis dans localStorage
-  function saveReviews(arr){ 
+  // Envoyer un avis vers l'API serveur (et fallback localStorage si échec)
+  async function postReviewToServer(review){
     try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(arr));
-    }catch(e){
-      console.error('Erreur écriture localStorage:', e);
+      const res = await fetch(REVIEWS_API, {
+        method: 'POST',
+        headers: {'Content-Type':'application/json'},
+        body: JSON.stringify(review)
+      });
+      if(!res.ok) throw new Error('API error ' + res.status);
+      return await res.json();
+    }catch(err){
+      console.warn('Envoi au serveur échoué, sauvegarde locale:', err);
+      try{ const reviews = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); reviews.push(review); localStorage.setItem(STORAGE_KEY, JSON.stringify(reviews)); }catch(e){}
+      return null;
     }
   }
 
   // Afficher tous les avis (les plus récents d'abord)
-  function render(){
-    const reviews = loadReviews().sort((a,b)=> b.date - a.date);
+  async function render(){
+    const reviews = (await fetchReviews()).sort((a,b)=> b.date - a.date);
     if(list){
       list.innerHTML = reviews.length ? reviews.map(r => `
         <article class="review-card card">
           <div class="review-head">
-            <strong>${escapeHtml(r.name)}</strong>
+            <strong>${escapeHtml(r.name || 'Anonyme')}</strong>
             <span class="muted"> — ${r.service || 'Service général'}</span>
           </div>
           <div class="review-body">
@@ -109,29 +120,27 @@ document.addEventListener('DOMContentLoaded', function(){
         date: Date.now() 
       };
 
-      // Ajouter l'avis à la liste et sauvegarder
-      const reviews = loadReviews();
-      reviews.push(review);
-      saveReviews(reviews);
-      
-      // Afficher immédiatement le nouvel avis
-      render();
-      
-      status.textContent = 'Publication en cours...'; 
+      status.textContent = 'Publication en cours...';
       status.style.color = 'var(--muted)';
 
-      // Envoyer une notification au propriétaire
+      // Poster au serveur (fallback localStorage si échec)
+      try{
+        await postReviewToServer(review);
+      }catch(e){
+        console.warn('Erreur en postReviewToServer:', e);
+      }
+
+      // Envoyer une notification au propriétaire (email)
       try{
         await sendNotification({ name, service, rating, message });
-        status.textContent = '✓ Merci ! Votre avis est publié. Nous en avons été informés.';
-        status.style.color = '#10b981';
       }catch(err){
         console.warn('Notification email échouée:', err);
-        status.textContent = '✓ Avis publié avec succès. (Alerte email échouée, mais votre avis est visible)';
-        status.style.color = '#10b981';
       }
-      
+
+      status.textContent = '✓ Merci ! Votre avis est publié.';
+      status.style.color = '#10b981';
       form.reset();
+      render();
     });
   }
 
