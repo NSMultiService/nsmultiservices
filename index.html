@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Naderplus Solution Multi-Services (NSM)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link rel="shortcut icon" href="assets/images/Fav.jpg" type="image/x-icon">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <!-- <style>
+    /* Carrousel des services */
+.carousel-services {
+  overflow: hidden;
+  margin-bottom: 3rem;
+  border-radius: 8px;
+}
+
+.carousel-track {
+  display: flex;
+  animation: scroll 12s linear infinite;
+  width: fit-content;
+}
+
+.carousel-item {
+  flex-shrink: 0;
+  width: 300px;
+  text-align: center;
+}
+
+.carousel-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+.carousel-item h4 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-900px); }
+}
+
+/* Pour écrans mobiles */
+@media (max-width: 768px) {
+  .carousel-item {
+    width: 250px;
+  }
+  
+  @keyframes scroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-750px); }
+  }
+}
+  </style> -->
+</head>
+<body>
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="index.html">NSM</a>
+       
+      <nav class="nav">
+        <a  href="index.html">Accueil</a>
+        <a href="services.html">Nos services</a>
+        <a href="about.html">À propos</a>
+        <a href="avis.html" aria-current="page">Avis</a>
+        <a href="galerie.html" aria-current="page">Galerie</a>
+        <a href="paiement.html" class="btn small">Paiement</a>
+        <a href="blog.html" aria-current="page">Blog</a>
+        <a href="contact.html" class="btn small">Contact</a>
+      </nav>
+      <button class="nav-toggle" aria-label="Ouvrir le menu">☰</button>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="container hero-grid">
+        <div class="hero-content">
+          <h1>Naderplus Solution Multi-Services – Votre solution administrative et technologique</h1>
+          <p class="lead">Rapidité, fiabilité et professionnalisme au service de vos démarches</p>
+          <div class="hero-ctas">
+            <a href="contact.html" class="btn primary">Nous contacter</a>
+            <a href="https://wa.me/50940317399" class="btn outline" target="_blank" rel="noopener">WhatsApp</a>
+          </div>
+        </div>
+        <div class="hero-card">
+          <div class="card trust">
+            <h3>Confiance</h3>
+            <ul>
+              <li>Service rapide</li>
+              <li>Sécurité et confidentialité</li>
+              <li>Equipe professionnelle</li>
+            </ul>
+            <a href="services.html" class="btn small">Voir nos services</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="services-overview">
+      <div class="carousel-services">
+        <div class="carousel-track" id="carouselTrack">
+          <div class="carousel-item">
+            <img src="/assets/images/pasport.jpg" alt="Services administratifs">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/affiche.jpg" alt="Impression & bureautique">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/mastercard.jpg" alt="Informatique & sécurité">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/album.jpg" alt="informatique & sécurité">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/affihe2.jpg" alt="Service 5">
+          </div>
+          <div class="carousel-item">
+            <img src="assets/images/reliure.jpg" alt="reliure">
+          </div>
+        </div>
+        <button class="carousel-btn prev" id="prevBtn">❮</button>
+        <button class="carousel-btn next" id="nextBtn">❯</button>
+      </div>
+
+      <div class="carousel-indicators" id="indicators"></div>
+
+      <div class="container">
+        <h2>Nos services</h2>
+        <p class="muted">Solutions administratives, impression, informatique et sécurité pour particuliers et entreprises.</p>
+        
+        <div class="grid services-grid">
+          <article class="service">
+            <h4>Services administratifs</h4>
+            <p>Passeport, extrait d'archive, casier judiciaire, permis de conduire, visas, légalisation, actes d'état civil.</p>
+          </article>
+          <article class="service">
+            <h4>Impression & bureautique</h4>
+            <p>Impression noir & blanc et couleur, plastification, reliure, scanner, saisie et traitement de texte.</p>
+          </article>
+          <article class="service">
+            <h4>Informatique & sécurité</h4>
+            <p>Dépannage PC, installation de caméras de surveillance, services cartes (Mastercard / débit).</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="why container">
+      <h2>Pourquoi choisir NSM ?</h2>
+      <div class="grid why-grid">
+        <div class="why-item"><strong>Professionnalisme</strong><p>Equipe expérimentée, confidentialité garantie.</p></div>
+        <div class="why-item"><strong>Rapidité</strong><p>Traitement efficace de vos demandes.</p></div>
+        <div class="why-item"><strong>Accessibilité</strong><p>Contact facile, assistance locale et internationale.</p></div>
+      </div>
+    </section>
+
+    <section class="cta container">
+      <div class="cta-box">
+        <h3>Prêt à démarrer ?</h3>
+        <p>Contactez-nous ou envoyez un message via WhatsApp.</p>
+        <div>
+          <a class="btn primary" href="contact.html">Nous contacter</a>
+          <a class="btn outline" href="https://wa.me/50940317399" target="_blank" rel="noopener">WhatsApp</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+        
+      <div>
+        <strong>Naderplus Solution Multi-Services</strong>
+        <p>Baie-Tortue, Anse-à-Galets (La Gonâve)</p>
+        <strong>SAJ Multi Services</strong>
+        <p>Léogâne , Rue Lavandière  #24</p>
+      </div>
+      <div class="contacts">
+        <a href="tel:+50940317399">+509 40 31 7399</a>
+        <a href="tel:+18186509746">+1 818 650 9746</a>
+        <a href="tel:+50947812457">+509 47 81 2457</a>
+        <a href="tel:+50941819394">+509 41 81 9394</a>
+      </div>
+  </footer>
+
+  <a class="whatsapp-float" href="https://wa.me/50940317399" target="_blank" rel="noopener" aria-label="WhatsApp">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="#fff" xmlns="http://www.w3.org/2000/svg"><path d="M20.5 3.5C18 1 14.8 0 11.6 0 5.6 0 .9 4.7.9 10.5c0 1.8.5 3.4 1.5 4.9L0 24l8.8-2.3c1.4.4 2.8.6 4.4.6 6 0 10.7-4.7 10.7-10.5 0-3.2-1-6.4-3.4-8.7zM11.6 21.4c-1.4 0-2.8-.3-4-.8L4 20.1l.6-3.7c-.9-1.3-1.4-2.9-1.4-4.6 0-4.2 3.4-7.6 7.4-7.6 2 0 3.9.8 5.3 2.2 1.4 1.4 2.1 3.3 2.1 5.2 0 4.2-3.4 7.6-7.4 7.6z"/><path d="M17.2 13.2c-.3-.1-1.9-.9-2.2-1-.3-.1-.5-.1-.7.1-.2.2-.8.9-1 1.1-.2.2-.4.3-.7.1-.3-.1-1.3-.5-2.4-1.4-.9-.8-1.6-1.9-1.8-2.2-.2-.3 0-.4.1-.6.1-.1.3-.4.4-.6.1-.2.1-.4 0-.6-.1-.1-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5-.2 0-.4 0-.6 0-.2 0-.5.1-.7.3-.2.2-.9.9-.9 2.1 0 1.2.9 2.3 1 2.5.1.2 1.6 2.5 3.9 3.7 2.3 1.2 2.3.8 2.7.8.4 0 1.3-.5 1.6-1 .3-.6.3-1 .2-1.1-.1-.2-.3-.3-.6-.4z"/></svg>
+  </a>
+
+  <script src="assets/js/main.js"></script>
+</body>
+</html>

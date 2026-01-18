@@ -1,0 +1,23 @@
+# Fichiers de configuration sensibles
+config/db.php
+config/*.local.php
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+*.log
+
+# Éditeur
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (si utilisé)
+node_modules/
+package-lock.json
+
+# Fichiers temporaires
+*.tmp
+*.temp
+/uploads/temp/
