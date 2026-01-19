@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function(){
   const STORAGE_KEY = 'nsm_reviews_v1';
-  const REVIEWS_API = '/api/reviews.php';
+  const REVIEWS_API = '/api/reviews';
   const EMAILJS_PUBLIC_KEY = 'AdzX2pPF5aUa4A9hQ';
   const EMAILJS_SERVICE_ID = 'nsm_rfuqyff';
   const EMAILJS_TEMPLATE_ID = 'template_5e538zh';
@@ -13,10 +13,10 @@ document.addEventListener('DOMContentLoaded', function(){
   // Charger les avis depuis l'API serveur (fallback localStorage si offline)
   async function fetchReviews(){
     try{
-      const res = await fetch(REVIEWS_API);
+      const res = await fetch(REVIEWS_API, { cache: 'no-store' });
       if(!res.ok) throw new Error('Fetch failed ' + res.status);
       const json = await res.json();
-      return Array.isArray(json) ? json : [];
+      return (json && json.success && Array.isArray(json.data)) ? json.data : [];
     }catch(err){
       console.warn('Récupération via API échouée, fallback localStorage:', err);
       try{ const stored = localStorage.getItem(STORAGE_KEY); return stored ? JSON.parse(stored) : []; }catch(e){ return []; }
@@ -26,10 +26,17 @@ document.addEventListener('DOMContentLoaded', function(){
   // Envoyer un avis vers l'API serveur (et fallback localStorage si échec)
   async function postReviewToServer(review){
     try{
+      // Map review fields to API expected shape (accepts name/service/message)
+      const payload = {
+        name: review.name,
+        service: review.service,
+        rating: review.rating,
+        message: review.message
+      };
       const res = await fetch(REVIEWS_API, {
         method: 'POST',
         headers: {'Content-Type':'application/json'},
-        body: JSON.stringify(review)
+        body: JSON.stringify(payload)
       });
       if(!res.ok) throw new Error('API error ' + res.status);
       return await res.json();
@@ -42,21 +49,41 @@ document.addEventListener('DOMContentLoaded', function(){
 
   // Afficher tous les avis (les plus récents d'abord)
   async function render(){
-    const reviews = (await fetchReviews()).sort((a,b)=> b.date - a.date);
+    const raw = await fetchReviews();
+    // Normalize timestamp (accept either ms timestamp `date` or SQL `created_at`)
+    const reviews = raw.map(r => {
+      let ts = 0;
+      if (r.date) ts = Number(r.date);
+      else if (r.created_at) ts = Date.parse(r.created_at);
+      return Object.assign({}, r, { _ts: ts });
+    }).sort((a,b) => (b._ts || 0) - (a._ts || 0));
+
     if(list){
-      list.innerHTML = reviews.length ? reviews.map(r => `
-        <article class="review-card card">
-          <div class="review-head">
-            <strong>${escapeHtml(r.name || 'Anonyme')}</strong>
-            <span class="muted"> — ${r.service || 'Service général'}</span>
-          </div>
-          <div class="review-body">
-            <div class="rating">${'★'.repeat(r.rating)}${'☆'.repeat(5-r.rating)}</div>
-            <p>${escapeHtml(r.message)}</p>
-          </div>
-          <div class="review-meta muted">${new Date(r.date).toLocaleDateString('fr-FR', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'})}</div>
-        </article>
-      `).join('') : '<p class="muted">Aucun avis pour le moment. Soyez le premier à laisser un avis !</p>';
+      if (!reviews.length) {
+        list.innerHTML = '<p class="muted">Aucun avis pour le moment. Soyez le premier à laisser un avis !</p>';
+        return;
+      }
+
+      list.innerHTML = reviews.map(r => {
+        const name = r.name || (r.first_name ? (r.first_name + ' ' + (r.last_name||'')) : 'Anonyme');
+        const serviceLabel = r.service || r.service_name || 'Service général';
+        const message = r.message || r.comment || '';
+        const rating = r.rating || 0;
+        const dateStr = r._ts ? new Date(r._ts).toLocaleDateString('fr-FR', {year:'numeric',month:'long',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '';
+
+        return `
+          <article class="review-card card">
+            <div class="review-head">
+              <strong>${escapeHtml(name)}</strong>
+              <span class="muted"> — ${escapeHtml(serviceLabel)}</span>
+            </div>
+            <div class="review-body">
+              <div class="rating">${'★'.repeat(rating)}${'☆'.repeat(5-rating)}</div>
+              <p>${escapeHtml(message)}</p>
+            </div>
+            <div class="review-meta muted">${dateStr}</div>
+          </article>`;
+      }).join('');
     }
   }
 

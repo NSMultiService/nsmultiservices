@@ -1,23 +1,88 @@
-# Fichiers de configuration sensibles
+# ============================================
+# FICHIERS SENSIBLES ET DE CONFIGURATION
+# ============================================
+
+# Fichiers de configuration sensibles (identifiants, mots de passe)
 config/db.php
 config/*.local.php
+.env
+.env.local
+.env.*.php
 
-# Fichiers système
+# ============================================
+# FICHIERS DE BASE DE DONNÉES
+# ============================================
+
+# Sauvegardes de BD (contiennent des données sensibles)
+database/backups/
+database/*.sql
+database/*.backup
+
+# ============================================
+# FICHIERS SYSTÈME
+# ============================================
+
 .DS_Store
 Thumbs.db
 *.log
+*.tmp
+*.temp
+desktop.ini
 
-# Éditeur
+# ============================================
+# ÉDITEURS ET IDE
+# ============================================
+
 .vscode/
 .idea/
 *.swp
 *.swo
+*.sublime-workspace
+*.sublime-project
+*.komodoproject
+.netbeans/
+.buildpath
+.project
+.settings/
 
-# Node modules (si utilisé)
+# ============================================
+# NODE ET DÉPENDANCES
+# ============================================
+
 node_modules/
 package-lock.json
+yarn.lock
+dist/
 
-# Fichiers temporaires
-*.tmp
-*.temp
-/uploads/temp/
+# ============================================
+# FICHIERS TEMPORAIRES ET UPLOADS
+# ============================================
+
+uploads/temp/
+uploads/*.tmp
+/temp/
+cache/
+/cache/*
+!cache/.gitkeep
+
+# ============================================
+# OS SPÉCIFIQUES
+# ============================================
+
+.AppleDouble
+.LSOverride
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+
+# Windows
+*.lnk
+$RECYCLE.BIN/
+
+# ============================================
+# FICHIERS DE TEST LOCAUX
+# ============================================
+
+test_local.php
+debug.php
+*.test.php

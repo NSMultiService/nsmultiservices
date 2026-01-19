@@ -6,8 +6,9 @@
 
 // Configuration de la base de données
 define('DB_HOST', 'localhost');
-define('DB_USER', 'nsm_user');           // À modifier avec vos identifiants
-define('DB_PASSWORD', 'nsm_secure_pass'); // À modifier avec un mot de passe fort
+// Pour environnement de développement local (XAMPP), utiliser l'utilisateur root
+define('DB_USER', 'root');
+define('DB_PASSWORD', ''); // mot de passe vide par défaut pour XAMPP
 define('DB_NAME', 'nsm_website');
 define('DB_PORT', 3306);
 

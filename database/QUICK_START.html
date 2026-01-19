@@ -1,0 +1,300 @@
+<!-- 
+  GUIDE DE DÉMARRAGE RAPIDE - RÉINITIALISATION BD
+  Mettez ce fichier en signet pour un accès facile
+-->
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🚀 Démarrage Rapide - Réinitialisation BD NSM</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        
+        .quick-steps {
+            background: #f0f7ff;
+            border-left: 5px solid #667eea;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+        
+        .step {
+            display: flex;
+            margin: 20px 0;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #f0f0f0;
+            transition: all 0.3s;
+        }
+        
+        .step:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15);
+        }
+        
+        .step-number {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+            flex-shrink: 0;
+        }
+        
+        .step-content h3 {
+            margin: 0 0 10px 0;
+            color: #333;
+        }
+        
+        .step-content p {
+            margin: 5px 0;
+            color: #666;
+            line-height: 1.6;
+        }
+        
+        .action-button {
+            display: inline-block;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-top: 10px;
+            transition: transform 0.3s;
+        }
+        
+        .action-button:hover {
+            transform: scale(1.05);
+        }
+        
+        .warning {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #856404;
+        }
+        
+        .warning strong {
+            color: #721c24;
+        }
+        
+        .info-box {
+            background: #e7f3ff;
+            border-left: 5px solid #4dabf7;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            color: #1b5b94;
+        }
+        
+        .links-section {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .link-card {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .link-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.15);
+        }
+        
+        .link-card a {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        
+        .primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .success { background: #51cf66; }
+        .warning-btn { background: #ff6b6b; }
+        .info { background: #4dabf7; }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 Guide de Réinitialisation Rapide</h1>
+        <p class="subtitle">Base de Données NSM - Recommencer à Zéro</p>
+
+        <!-- Avertissement -->
+        <div class="warning">
+            <strong>⚠️ Attention!</strong> Avant de réinitialiser, créez une sauvegarde de vos données actuelles. 
+            La réinitialisation supprime TOUT.
+        </div>
+
+        <!-- Étapes rapides -->
+        <div class="quick-steps">
+            <h2 style="margin-top: 0;">⚡ Étapes Rapides (3 min)</h2>
+            
+            <!-- Étape 1 -->
+            <div class="step">
+                <div class="step-number">1</div>
+                <div class="step-content">
+                    <h3>💾 Sauvegarder (Optionnel mais Recommandé)</h3>
+                    <p>Créez une sauvegarde de votre base de données actuelle avant la réinitialisation.</p>
+                    <a href="backup_database.php" class="action-button">Créer une Sauvegarde</a>
+                </div>
+            </div>
+
+            <!-- Étape 2 -->
+            <div class="step">
+                <div class="step-number">2</div>
+                <div class="step-content">
+                    <h3>🔄 Réinitialiser</h3>
+                    <p>Supprimez la base existante et créez-en une nouvelle complètement vierge avec la structure correcte.</p>
+                    <a href="reset_database.php" class="action-button">Réinitialiser la BD</a>
+                </div>
+            </div>
+
+            <!-- Étape 3 -->
+            <div class="step">
+                <div class="step-number">3</div>
+                <div class="step-content">
+                    <h3>✅ Tester</h3>
+                    <p>Vérifiez que la réinitialisation a réussi et consultez les statistiques.</p>
+                    <a href="test_database.php" class="action-button">Tester la BD</a>
+                </div>
+            </div>
+
+            <!-- Étape 4 -->
+            <div class="step">
+                <div class="step-number">4</div>
+                <div class="step-content">
+                    <h3>🎉 C'est Prêt!</h3>
+                    <p>Votre base de données est réinitialisée avec 19 services et toutes les catégories.</p>
+                    <a href="../" class="action-button">Retour au Site</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Informations supplémentaires -->
+        <div class="info-box">
+            <strong>ℹ️ Ce qui est Créé:</strong><br>
+            ✅ 9 tables complètement structurées<br>
+            ✅ 6 catégories de services<br>
+            ✅ 19 services avec prix et durée de traitement<br>
+            ✅ 13 documents requis par service<br>
+            ✅ Toutes les relations (clés étrangères) configurées<br>
+            ✅ Base de données vierge (zéro utilisateurs, zéro demandes)
+        </div>
+
+        <!-- Alternatives -->
+        <h2 style="margin-top: 40px;">🌐 Autres Méthodes</h2>
+
+        <div class="links-section">
+            <!-- phpMyAdmin -->
+            <div class="link-card">
+                <h3>📊 phpMyAdmin</h3>
+                <p>Utilisez l'interface web de phpMyAdmin pour importer manuellement.</p>
+                <a href="http://localhost/phpmyadmin" class="info">Ouvrir phpMyAdmin</a>
+            </div>
+
+            <!-- Centre de Gestion -->
+            <div class="link-card">
+                <h3>🗄️ Centre de Gestion</h3>
+                <p>Interface complète pour gérer tous les aspects de la base de données.</p>
+                <a href="index.php" class="primary">Accéder au Centre</a>
+            </div>
+
+            <!-- Guide Détaillé -->
+            <div class="link-card">
+                <h3>📖 Guide Complet</h3>
+                <p>Instructions détaillées avec toutes les options et dépannage.</p>
+                <a href="RESET_GUIDE.md" class="info">Consulter le Guide</a>
+            </div>
+        </div>
+
+        <!-- FAQ Rapide -->
+        <h2 style="margin-top: 40px;">❓ Questions Rapides</h2>
+        
+        <div style="background: #f5f5f5; padding: 20px; border-radius: 8px;">
+            <p><strong>Q: Mes données vont-elles être supprimées?</strong><br>
+            R: Oui. La réinitialisation supprime TOUT. Créez une sauvegarde d'abord si vous avez des données importantes.</p>
+            
+            <p style="margin-top: 15px;"><strong>Q: Combien de temps ça prend?</strong><br>
+            R: Moins de 10 secondes généralement.</p>
+            
+            <p style="margin-top: 15px;"><strong>Q: Puis-je restaurer après?</strong><br>
+            R: Oui, si vous avez créé une sauvegarde. Restaurez-la via phpMyAdmin.</p>
+            
+            <p style="margin-top: 15px;"><strong>Q: Comment ajouter mes propres services?</strong><br>
+            R: Après la réinitialisation, utilisez phpMyAdmin pour insérer vos données dans les tables.</p>
+        </div>
+
+        <!-- Ressources -->
+        <h2 style="margin-top: 40px;">📚 Ressources</h2>
+        
+        <ul style="line-height: 1.8;">
+            <li><a href="DATABASE_RESET_INFO.md" style="color: #667eea;">📄 Informations Complètes</a></li>
+            <li><a href="RESET_GUIDE.md" style="color: #667eea;">📖 Guide Détaillé</a></li>
+            <li><a href="../DATABASE_ARCHITECTURE.md" style="color: #667eea;">🏗️ Architecture de la Base</a></li>
+            <li><a href="../API_DOCUMENTATION.md" style="color: #667eea;">🔌 Documentation API</a></li>
+        </ul>
+
+        <footer>
+            <p>NSM Website Database Management | v1.0</p>
+            <p>Créé le 18 Janvier 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

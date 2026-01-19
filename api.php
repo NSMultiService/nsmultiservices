@@ -184,6 +184,9 @@ if (isset($path_parts[1]) && $path_parts[1] === 'api' && isset($path_parts[2])) 
             case 'reviews':
                 if ($method === 'GET') {
                     // Obtenir les avis approuvés
+                    // Prevent caching so clients always get latest reviews
+                    header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+                    header('Expires: 0');
                     $reviews = $serviceManager->getApprovedReviews();
                     http_response_code(200);
                     echo json_encode([
@@ -193,14 +196,37 @@ if (isset($path_parts[1]) && $path_parts[1] === 'api' && isset($path_parts[2])) 
                 } elseif ($method === 'POST') {
                     // Créer un avis
                     $data = json_decode(file_get_contents('php://input'), true);
-                    $result = $serviceManager->createReview(
-                        $data['user_id'],
-                        $data['request_id'],
-                        $data['service_id'],
-                        $data['rating'],
-                        $data['comment']
-                    );
-                    
+
+                    // Accept multiple payload shapes: either {user_id, request_id, service_id, rating, comment}
+                    // or simple {name, service, rating, message}
+                    if (isset($data['name']) && isset($data['message'])) {
+                        $name = trim($data['name']);
+                        $serviceName = $data['service'] ?? null;
+                        $rating = intval($data['rating'] ?? 0);
+                        $message = trim($data['message']);
+
+                        // Map service name to id (create if missing)
+                        $serviceId = $serviceManager->findOrCreateServiceByName($serviceName ?: 'Service général');
+
+                        // Auto-approve public reviews so they appear immediately
+                        $result = $serviceManager->createReview(
+                            null,
+                            null,
+                            $serviceId,
+                            $rating,
+                            $message,
+                            true
+                        );
+                    } else {
+                        $result = $serviceManager->createReview(
+                            $data['user_id'] ?? null,
+                            $data['request_id'] ?? null,
+                            $data['service_id'] ?? null,
+                            $data['rating'] ?? null,
+                            $data['comment'] ?? null
+                        );
+                    }
+
                     if ($result['success']) {
                         http_response_code(201);
                         echo json_encode([
@@ -210,7 +236,7 @@ if (isset($path_parts[1]) && $path_parts[1] === 'api' && isset($path_parts[2])) 
                         ]);
                     } else {
                         http_response_code(400);
-                        echo json_encode(['success' => false, 'error' => $result['error']]);
+                        echo json_encode(['success' => false, 'error' => $result['error'] ?? 'Erreur lors de la création']);
                     }
                 }
                 break;

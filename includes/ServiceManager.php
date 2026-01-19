@@ -53,6 +53,40 @@ class ServiceManager {
     }
 
     /**
+     * Trouver un service par nom (exact ou similaire) ou créer s'il n'existe pas
+     */
+    public function findOrCreateServiceByName($name) {
+        $name = trim($name ?: 'Service général');
+        // Try exact match first
+        $sql = "SELECT id FROM services WHERE name = ? LIMIT 1";
+        $row = $this->query->getOne($sql, [$name]);
+        if ($row && isset($row['id'])) return $row['id'];
+
+        // Try a LIKE search
+        $sql2 = "SELECT id FROM services WHERE name LIKE ? LIMIT 1";
+        $row2 = $this->query->getOne($sql2, ["%" . $name . "%"]);
+        if ($row2 && isset($row2['id'])) return $row2['id'];
+
+        // Otherwise create a lightweight service entry under category 1 (fallback)
+        $fallbackName = $name ?: 'Service général';
+        $result = $this->createService([
+            'category_id' => 1,
+            'name' => $fallbackName,
+            'description' => 'Service ajouté automatiquement à partir d\'un avis',
+            'base_price' => 0.00,
+            'processing_time_min' => 0,
+            'processing_time_max' => 0,
+            'processing_time_unit' => 'jours'
+        ]);
+
+        if ($result['success']) {
+            return $result['lastInsertId'] ?: null;
+        }
+
+        return null;
+    }
+
+    /**
      * Créer un nouveau service
      */
     public function createService($data) {
@@ -271,14 +305,20 @@ class ServiceManager {
     /**
      * Créer un avis
      */
-    public function createReview($userId, $requestId, $serviceId, $rating, $comment) {
+    public function createReview($userId, $requestId, $serviceId, $rating, $comment, $autoApprove = false) {
         if ($rating < 1 || $rating > 5) {
             return ['success' => false, 'error' => 'Rating must be between 1 and 5'];
         }
 
-        $sql = "INSERT INTO reviews (user_id, request_id, service_id, rating, comment)
-                VALUES (?, ?, ?, ?, ?)";
-        return $this->query->execute($sql, [$userId, $requestId, $serviceId, $rating, $comment]);
+        if ($autoApprove) {
+            $sql = "INSERT INTO reviews (user_id, request_id, service_id, rating, comment, is_approved, approved_at)
+                    VALUES (?, ?, ?, ?, ?, 1, NOW())";
+            return $this->query->execute($sql, [$userId, $requestId, $serviceId, $rating, $comment]);
+        } else {
+            $sql = "INSERT INTO reviews (user_id, request_id, service_id, rating, comment)
+                    VALUES (?, ?, ?, ?, ?)";
+            return $this->query->execute($sql, [$userId, $requestId, $serviceId, $rating, $comment]);
+        }
     }
 
     /**
